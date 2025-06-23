@@ -52,6 +52,9 @@ The construction, execution and interpretation of multi-state models includingh 
   - 2nd Model where stages of disease are SI 
   - Third more realistic SEI
 
+**Research Question**
+How do species-specific differences in disease acquisition patterns and rates influence transmission dynamics across catalytic, SI, and SEI epidemiological models?
+
 **Notes: 23 June**
 - Check google doc
 - Each section needs a writer and a reviewer 
