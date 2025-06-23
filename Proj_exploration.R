@@ -1,9 +1,9 @@
 
-df_C <- read_excel("/Users/georgiaroussos/Desktop/MMED_C.xlsx", skip = 1) %>% 
+df_C <- read.csv("/Users/georgiaroussos/Desktop/MMED_C.csv", skip = 1) %>% 
   mutate(prop_infected = Infected/dissected, 
          species = "Congolense")
 
-df_V <- read_excel("/Users/georgiaroussos/Desktop/MMED_V.xlsx", skip = 1) %>% 
+df_V <- read.csv("/Users/georgiaroussos/Desktop/MMED_V.csv", skip = 1) %>% 
   mutate(prop_infected = Infected/dissected, 
          species = "Vivax")
 
