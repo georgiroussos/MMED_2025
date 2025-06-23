@@ -36,25 +36,26 @@ The construction, execution and interpretation of multi-state models includingh 
 - Work with real biological data
 - Develop modeling skills for simple stochastic models
 
-**Meeting notes (All together)**
-- reviewing slides and project 
-- idealisation of models 
-- results discussion
-  
-**Notes: 23 June**
-- Check google doc
-- Each section needs a writer and a reviewer 
-- Final report; presentation and analysis 
-- For this week: 
-
 **POA**
-- Shade to write up methods reviewed by Davryn 
-- Issues and limitations to be written and reviewed by Mercy and Tlamelo 
-- Results section to be written up by Georgi reviewed by ... 
+- Davryn to write introduction to be initailly reviewed by Shade
+- Shadé to write up methods initailly reviewed by Davryn 
+- Issues and limitations to be written and initailly reviewed by Mercy and Tlamelo 
+- Results section to be written up by Georgi initailly reviewed by Shade
+- All togther
+  - reviewing slides and project 
+  - idealisation of models 
+  - results discussion   
 
 **End goals**
-- Project involves deciding 
 - Pattern and rate of disease aquisition differs by species 
   - 1st Simple catalytic model (enzyme kinetics)
   - 2nd Model where stages of disease are SI 
   - Third more realistic SEI
+
+**Notes: 23 June**
+- Check google doc
+- Each section needs a writer and a reviewer 
+- Final report; presentation and analysis 
+- Catalytic model to be coded individually and compared
+- Final model pushed to git 
+- Following models will be split into two groups (with one main coder per group) followed from group's ideation of models 
