@@ -1,10 +1,11 @@
 library(deSolve)
 library(dplyr)
 library(ggplot2)
+library(ellipse)
 
 # Import data -------------------------------------------------------------
 
-df_obs <- read.csv("/Users/georgiaroussos/Desktop/MMED_C.csv", skip = 1) %>%
+df_obs <- read.csv("MMED_C.csv", skip = 1) %>%
   mutate(Species = "C") %>%
   rename(time = category,
          N = dissected,
@@ -90,7 +91,9 @@ optim.sann <- optim(par = guess.params,
                     method = "SANN",
                     control = list(trace = 3, maxit = 150),
                     fixed.params = disease_params(),
-                    obsDat = df_obs)
+                    obsDat = df_obs,
+                    # add hessian = T
+                    hessian = T)
 
 optim.final <- optim(par = optim.sann$par,
                      fn = objFXN,
@@ -125,4 +128,25 @@ ggplot(df_plot, aes(x = time)) +
 
 # Contour plots -----------------------------------------------------------
 
+fisherInfMatrix <- solve(optim.sann$hessian)
+
+## Initialize plot of parameters
+plot(1,1, type = 'n', log = 'xy',
+     ## xlim = range(alpha.seq), ylim = range(Beta.seq),
+     xlim = c(0.03,4), ylim = c(.0015,0.05),
+     las = 1,
+     xlab = expression(lambda), ylab = expression(gamma),
+     main = "-log(likelihood) contours", bty = "n")
+
+## Add true parameter values to the plot #### Here
+#with(true_pars, points(lambda, gamma, pch = 16, cex = 2, col = 'red'))
+## Add MLE to the plot
+points(exp(MLEfits['log_lambda']), exp(MLEfits['log_gamma']), pch = 16, cex = 2, col = 'black')
+## Add 95% contour ellipse from Hessian
+lines(exp(ellipse(fisherInfMatrix, centre = MLEfits, level = .95)))
+#### Here
+#legend("topright", c('truth', 'MLE', '95% Confidence Region'), lty = c(NA, NA, 1), pch = c(16,16, NA),
+#col = c('red', 'black', 'black'), bg='white', bty = 'n')
+legend("topright", c('MLE', '95% Confidence Region'), lty = c(NA, 1), pch = c(16, NA),
+       col = c('black', 'black'), bg='white', bty = 'n')
 
