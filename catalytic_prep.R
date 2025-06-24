@@ -1,4 +1,6 @@
 library(tidyverse)
+library(dplyr)
+library(ggplot2)
 
 # Data prep ---------------------------------------------------------------
 
@@ -26,7 +28,6 @@ disease_params <- function(lambda = 0.9
 ){
   return(as.list(environment()))
 }
-
 
 
 # Catalytic model ---------------------------------------------------------
