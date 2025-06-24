@@ -28,6 +28,7 @@ disease_params <- function(lambda = 0.9
 }
 
 
+
 # Catalytic model ---------------------------------------------------------
 
 catalytic_func <- function(lambda, a, tau) { #as a function of lambda (rate of infection); 
@@ -107,13 +108,15 @@ best_pars
 
 fitted_values <- catalytic_func(lambda = best_pars[1], a = df_C$time, tau = best_pars[2]) %>%
   mutate(N = df_C$N,
-         observed_infections = df_C$I,
+         observed_infections = df_C$prop_inf,
          fitted_infections = prevalence * N)
+
+fitted_values 
 
 
 ggplot(fitted_values, aes(x = time)) +
   geom_point(aes(y = observed_infections), color = "black", size = 2) +
-  geom_line(aes(y = fitted_infections), color = "blue", linewidth = 1) +
+  geom_line(aes(y = prevalence), color = "blue", linewidth = 1) +
   labs(title = "Catalytic Model",
        x = "Age",
        y = "Number Infected") +
