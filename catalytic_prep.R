@@ -3,7 +3,7 @@ library(ellipse)
 
 # Data prep ---------------------------------------------------------------
 
-df_C <- read.csv("MMED_C.csv", skip = 1) %>%
+df_C <- read.csv("/Users/georgiaroussos/Desktop/MMED_C.csv", skip = 1) %>%
   mutate(Species = "C") %>%
   rename(time = category,
          N = dissected,
