@@ -5,12 +5,14 @@ library(ellipse)
 
 # Import data -------------------------------------------------------------
 
-df_obs <- read.csv("MMED_C.csv", skip = 1) %>%
-  mutate(Species = "C") %>%
-  rename(time = category,
-         N = dissected,
-         I = Infected) %>%
-  mutate(prop_inf = I / N)
+#df_C <- read.csv("MMED_C.csv", skip = 1) %>%
+ # mutate(Species = "C") %>%
+#  rename(time = category,
+ #        N = dissected,
+  #       I = Infected) %>%
+#  mutate(prop_inf = I / N)
+
+df_obs <- read.csv("MMED_C_CI.csv") 
 
 
 # Parameters --------------------------------------------------------------
@@ -117,14 +119,15 @@ df_plot <- df_obs %>%
   left_join(fitted_df, by = "time")  # merge on time
 
 ggplot(df_plot, aes(x = time)) +
-  geom_point(aes(y = prop_inf), color = "black") +
-  geom_line(aes(y = predicted), color = "blue") +
+  geom_point(aes(y = prop_inf), color = "black", size = 2) +
+  geom_line(aes(y = prop_inf), color = "black") +
+  geom_point(shape = 21, aes(y = predicted), color = "darkorange", fill = "white", size = 2, stroke = 1.2) +
+  geom_line(aes(y = predicted), color = "darkorange", linetype = "dashed", linewidth = 1.2) +
+  geom_errorbar(aes(y = prop_inf, ymin = Lower_CI, ymax = Upper_CI ))+
   labs(title = "Fitted SEI Model",
        x = "Ovarian Age Category",
        y = "Proportion Infected") +
-  theme_minimal()
-
-
+  theme_bw()
 
 # Contour plots -----------------------------------------------------------
 
