@@ -3,12 +3,27 @@ library(ellipse)
 
 # Data prep ---------------------------------------------------------------
 
-df_C <- read.csv("/Users/georgiaroussos/Desktop/MMED_C.csv", skip = 1) %>%
+df_C <- read.csv("MMED_C.csv", skip = 1) %>%
   mutate(Species = "C") %>%
   rename(time = category,
          N = dissected,
          I = Infected) %>%
   mutate(prop_inf = I / N)
+
+
+# To produce the confidence intervals
+
+
+c_binom <- mapply(function(x,n) binom.test(x,n)$conf.int, df_C$I, df_C$N)
+
+
+CI_df <- data.frame(time = 0:15, Lower_CI = c(c_binom[1,]) , Upper_CI = c(c_binom[2,]) )
+
+# merge CI with dataframe
+df_C_CI <- left_join(df_C, CI_df, by = "time")
+
+# only for first time
+# write.csv(df_C_CI, "MMED_C_CI.csv")
 
 # Catalytic model ---------------------------------------------------------
 
@@ -55,17 +70,24 @@ tau_hat <- optim.vals$par[2]
 optim.vals$par[1]
 optim.vals$par[2]
 
-df_fit <- df_C %>%
-  mutate(predicted = catalytic_func(lambda_hat, time, tau_hat))
+#df_fit <- df_C %>%
+#  mutate(predicted = catalytic_func(lambda_hat, time, tau_hat))
+
+df_fit = data.frame(time = 0:15, predicted = catalytic_func(lambda_hat, 0:15, tau_hat))
+
+df_fit <- left_join(df_fit, df_C_CI, by = "time")
 
 
 ggplot(df_fit, aes(x = time)) +
-  geom_point(aes(y = prop_inf), color = "black") +
-  geom_line(aes(y = predicted), color = "blue") +
+  geom_point(aes(y = prop_inf), color = "black", size = 2) +
+  geom_line(aes(y = prop_inf), color = "black") +
+  geom_point(shape = 21, aes(y = predicted), color = "darkorange", fill = "white", size = 2, stroke = 1.2) +
+  geom_line(aes(y = predicted), color = "darkorange", linetype = "dashed", linewidth = 1.2) +
+  geom_errorbar(aes(y = prop_inf, ymin = Lower_CI, ymax = Upper_CI ))+
   labs(title = "Catalytic Model",
        x = "Ovarian Age Category",
        y = "Proportion Infected") +
-  theme_minimal()
+  theme_bw()
 
 # Adding and plotting parameter CIs
 
