@@ -150,3 +150,31 @@ lines(ell_exp)
 legend("topright", c('MLE', '95% Confidence Region'), lty = c(NA, 1), pch = c(16, NA),
        col = c('black', 'black'), bg = 'white', bty = 'n')
 
+# Parameter CIs -----------------------------------------------------------
+
+fisherInfMatrix <- solve(optim.final$hessian)
+log_se <- sqrt(diag(fisherInfMatrix))
+
+
+log_lambda_hat <- MLEfits["log_lambda"]
+log_gamma_hat <- MLEfits["log_gamma"]
+
+ci_log_lambda <- c(log_lambda_hat - 1.96 * log_se["log_lambda"],
+                   log_lambda_hat + 1.96 * log_se["log_lambda"])
+
+ci_log_gamma <- c(log_gamma_hat - 1.96 * log_se["log_gamma"],
+                  log_gamma_hat + 1.96 * log_se["log_gamma"])
+
+ci_lambda <- exp(ci_log_lambda)
+ci_gamma <- exp(ci_log_gamma)
+
+lambda_hat <- exp(log_lambda_hat)
+gamma_hat <- exp(log_gamma_hat)
+lambda_hat 
+gamma_hat 
+
+cat("lambda_hat:", lambda_hat, "\n")
+cat("95% CI for lambda:", round(ci_lambda, 5), "\n\n")
+
+cat("gamma_hat:", gamma_hat, "\n")
+cat("95% CI for gamma:", round(ci_gamma, 5), "\n")

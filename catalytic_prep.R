@@ -93,3 +93,9 @@ lines(ellipse(fisherInfMatrix, centre = MLEfits, level = .95))
 legend("topright", c('MLE', '95% Confidence Region'), lty = c(NA, 1), pch = c(16, NA),
        col = c('black', 'black'), bg='white', bty = 'n')
 
+
+prop_sigma<-sqrt(diag(fisherInfMatrix))
+prop_sigma<-diag(fisherInfMatrix)
+upper<-optim.vals$par+1.96*prop_sigma
+lower<-optim.vals$par-1.96*prop_sigma
+interval<-data.frame(value=optim.vals $par, upper=upper, lower=lower)
