@@ -3,27 +3,31 @@ library(ellipse)
 
 # Data prep ---------------------------------------------------------------
 
-df_C <- read.csv("MMED_C.csv", skip = 1) %>%
-  mutate(Species = "C") %>%
-  rename(time = category,
-         N = dissected,
-         I = Infected) %>%
-  mutate(prop_inf = I / N)
+#df_C <- read.csv("MMED_C.csv", skip = 1) %>%
+ # mutate(Species = "C") %>%
+#  rename(time = category,
+ #        N = dissected,
+  #       I = Infected) %>%
+#  mutate(prop_inf = I / N)
 
 
 # To produce the confidence intervals
 
 
-c_binom <- mapply(function(x,n) binom.test(x,n)$conf.int, df_C$I, df_C$N)
+# c_binom <- mapply(function(x,n) binom.test(x,n)$conf.int, df_C$I, df_C$N)
 
 
-CI_df <- data.frame(time = 0:15, Lower_CI = c(c_binom[1,]) , Upper_CI = c(c_binom[2,]) )
+# CI_df <- data.frame(time = 0:15, Lower_CI = c(c_binom[1,]) , Upper_CI = c(c_binom[2,]) )
 
 # merge CI with dataframe
-df_C_CI <- left_join(df_C, CI_df, by = "time")
+# df_C_CI <- left_join(df_C, CI_df, by = "time")
 
 # only for first time
 # write.csv(df_C_CI, "MMED_C_CI.csv")
+
+# import data again
+df_C <- read.csv("MMED_C_CI.csv")
+
 
 # Catalytic model ---------------------------------------------------------
 
@@ -75,7 +79,7 @@ optim.vals$par[2]
 
 df_fit = data.frame(time = 0:15, predicted = catalytic_func(lambda_hat, 0:15, tau_hat))
 
-df_fit <- left_join(df_fit, df_C_CI, by = "time")
+df_fit <- left_join(df_fit, df_C, by = "time")
 
 
 ggplot(df_fit, aes(x = time)) +
@@ -121,3 +125,4 @@ prop_sigma<-diag(fisherInfMatrix)
 upper<-optim.vals$par+1.96*prop_sigma
 lower<-optim.vals$par-1.96*prop_sigma
 interval<-data.frame(value=optim.vals $par, upper=upper, lower=lower)
+
