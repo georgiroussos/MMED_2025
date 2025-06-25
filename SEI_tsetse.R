@@ -5,7 +5,7 @@ library(ellipse)
 
 # Import data -------------------------------------------------------------
 
-df_obs <- read.csv("/Users/georgiaroussos/Desktop/MMED_C.csv", skip = 1) %>%
+df_obs <- read.csv("MMED_C.csv", skip = 1) %>%
   mutate(Species = "C") %>%
   rename(time = category,
          N = dissected,
@@ -17,7 +17,7 @@ df_obs <- read.csv("/Users/georgiaroussos/Desktop/MMED_C.csv", skip = 1) %>%
 disease_params <- function(lambda = 0.03,
                            gamma = 0.26,
                            mu = 0.0242,
-                           phi = exp(-0.0242 * 3)) {
+                           phi = exp(-0.0242 * 9)) {
   return(as.list(environment()))
 }
 
