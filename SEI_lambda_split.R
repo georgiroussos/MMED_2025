@@ -154,7 +154,7 @@ lambda_null_hat
 #points(lambda_hat, gamma_hat, pch = 16, cex = 2, col = 'black')
 #lines(ell_exp)
 #legend("topright", c('MLE', '95% Confidence Region'), lty = c(NA, 1), pch = c(16, NA),
-       col = c('black', 'black'), bg = 'white', bty = 'n')
+       #col = c('black', 'black'), bg = 'white', bty = 'n')
 
 # Parameter CIs -----------------------------------------------------------
 
@@ -197,3 +197,103 @@ log_likelihood <- -nllikelihood(parms = disease_params(lambda = lambda_hat  , ga
 num_pars <- 2
 traditional_AIC <- -2 *log_likelihood + 2*(num_pars)
 traditional_AIC
+
+
+
+# Parameter CIs -----------------------------------------------------------
+
+#Lambda
+library(stats)
+
+profile_log_lambda <- function(log_lambda_val, log_lambda_null_hat, log_gamma_hat) {
+  fit <- optim(par = c(log_lambda_null = log_lambda_null_hat, log_gamma = log_gamma_hat),
+               fn = function(p) {
+                 full_params <- c(log_lambda = log_lambda_val,
+                                  log_lambda_null = p[1],
+                                  log_gamma = p[2])
+                 objFXN(fit.params = full_params)
+               },
+               method = "Nelder-Mead", control = list(maxit = 300))
+  return(fit$value)
+}
+
+
+log_lambda_hat <- MLEfits["log_lambda"]
+log_lambda_null_hat <- MLEfits["log_lambda_null"]
+log_gamma_hat <- MLEfits["log_gamma"]
+
+exp(log_lambda_hat) 
+exp(log_lambda_null_hat) 
+exp(log_gamma_hat) 
+
+log_lambda_vals <- seq(log_lambda_hat - 2, log_lambda_hat + 2, length.out = 50)
+loglik_vals <- sapply(log_lambda_vals, profile_log_lambda, 
+                      log_lambda_null_hat = log_lambda_null_hat, 
+                      log_gamma_hat = log_gamma_hat)
+
+LLmin <- min(loglik_vals)
+threshold <- LLmin + 1.92  # 95% CI cutoff for 1 parameter
+
+valid_idx <- which(loglik_vals < threshold)
+ci_log_lambda <- range(log_lambda_vals[valid_idx])
+ci_lambda <- exp(ci_log_lambda)
+
+cat("95% CI for lambda (profile likelihood):", round(ci_lambda, 5), "\n")
+
+#Lambda_null
+profile_log_lambda_null <- function(log_lambda_null_val, log_lambda_hat, log_gamma_hat) {
+  fit <- optim(par = c(log_lambda = log_lambda_hat, log_gamma = log_gamma_hat),
+               fn = function(p) {
+                 full_params <- c(log_lambda = p[1],
+                                  log_lambda_null = log_lambda_null_val,
+                                  log_gamma = p[2])
+                 objFXN(fit.params = full_params)
+               },
+               method = "Nelder-Mead", control = list(maxit = 300))
+  return(fit$value)
+}
+
+log_lambda_null_vals <- seq(log_lambda_null_hat - 2, log_lambda_null_hat + 2, length.out = 50)
+loglik_lambda_null_vals <- sapply(log_lambda_null_vals, profile_log_lambda_null, 
+                                  log_lambda_hat = log_lambda_hat, 
+                                  log_gamma_hat = log_gamma_hat)
+
+LLmin_lambda_null <- min(loglik_lambda_null_vals)
+threshold_lambda_null <- LLmin_lambda_null + 1.92
+
+valid_idx_null <- which(loglik_lambda_null_vals < threshold_lambda_null)
+ci_log_lambda_null <- range(log_lambda_null_vals[valid_idx_null])
+ci_lambda_null <- exp(ci_log_lambda_null)
+
+cat("95% CI for lambda_null (profile likelihood):", round(ci_lambda_null, 5), "\n\n")
+
+
+#Gamma
+profile_log_gamma <- function(log_gamma_val, log_lambda_hat, log_lambda_null_hat) {
+  fit <- optim(par = c(log_lambda = log_lambda_hat, log_lambda_null = log_lambda_null_hat),
+               fn = function(p) {
+                 full_params <- c(log_lambda = p[1],
+                                  log_lambda_null = p[2],
+                                  log_gamma = log_gamma_val)
+                 objFXN(fit.params = full_params)
+               },
+               method = "Nelder-Mead", control = list(maxit = 300))
+  return(fit$value)
+}
+
+log_gamma_vals <- seq(log_gamma_hat - 2, log_gamma_hat + 2, length.out = 50)
+loglik_gamma_vals <- sapply(log_gamma_vals, profile_log_gamma, 
+                            log_lambda_hat = log_lambda_hat, 
+                            log_lambda_null_hat = log_lambda_null_hat)
+
+LLmin_gamma <- min(loglik_gamma_vals)
+threshold_gamma <- LLmin_gamma + 1.92
+
+valid_idx_gamma <- which(loglik_gamma_vals < threshold_gamma)
+ci_log_gamma <- range(log_gamma_vals[valid_idx_gamma])
+ci_gamma <- exp(ci_log_gamma)
+
+cat("95% CI for gamma (profile likelihood):", round(ci_gamma, 5), "\n")
+
+
+
