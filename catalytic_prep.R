@@ -126,3 +126,13 @@ upper<-optim.vals$par+1.96*prop_sigma
 lower<-optim.vals$par-1.96*prop_sigma
 interval<-data.frame(value=optim.vals $par, upper=upper, lower=lower)
 
+
+# AIC calculations
+
+# add in solved pars
+log_likelihood <- -neg_log_likelihood(params = c(MLEfits['lambda'], MLEfits['tau']), df_C)
+
+num_pars <- 2
+traditional_AIC <- -2 *log_likelihood + 2*(num_pars)
+traditional_AIC
+

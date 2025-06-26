@@ -181,3 +181,14 @@ cat("95% CI for lambda:", round(ci_lambda, 5), "\n\n")
 
 cat("gamma_hat:", gamma_hat, "\n")
 cat("95% CI for gamma:", round(ci_gamma, 5), "\n")
+
+
+# AIC
+
+
+
+log_likelihood <- -nllikelihood(parms = disease_params(lambda = lambda_hat  , gamma = gamma_hat), obsDat = df_obs)
+
+num_pars <- 2
+traditional_AIC <- -2 *log_likelihood + 2*(num_pars)
+traditional_AIC
